@@ -61,7 +61,7 @@ extern	qid16	readylist;	/* global ID for list of ready processes*/
 
 #define	CONTEXT	64		/* bytes in a function call context on	*/
 				/* the run-time stack			*/
-#define	QUANTUM	2		/* time slice in milliseconds		*/
+#define	QUANTUM	5		/* time slice in milliseconds		*/
 
 /* Size of the stack for the null process */
 
@@ -69,6 +69,7 @@ extern	qid16	readylist;	/* global ID for list of ready processes*/
 
 /* Prototypes of I/O functions used throughout the kernel */
 
+syscall	print_ready_list(qid16);
 syscall	kprintf(char *fmt, ...);
 syscall	kputc(byte);
 syscall	kgetc(void);

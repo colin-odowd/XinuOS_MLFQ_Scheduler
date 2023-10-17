@@ -17,6 +17,9 @@ extern	void	arp_hton(struct arppacket *);
 /* in file ascdate.c */
 extern	status	ascdate(uint32, char *);
 
+/* in file burst_execution.c */
+void burst_execution(uint32 number_bursts, uint32 burst_duration, uint32 sleep_duration);
+
 /* in file bufinit.c */
 extern	status	bufinit(void);
 
@@ -43,6 +46,9 @@ extern	syscall	control(did32, int32, int32, int32);
 
 /* in file create.c */
 extern	pid32	create(void *, uint32, pri16, char *, uint32, ...);
+
+/* in file create.c */
+extern	pid32	create_user_process(void *, uint32, pri16, char *, uint32, ...);
 
 /* in file ctxsw.S */
 extern	void	ctxsw(void *, void *);
