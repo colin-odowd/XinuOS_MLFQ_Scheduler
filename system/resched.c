@@ -41,7 +41,8 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		for (i = 0; i < NPROC; i++)
 		{
 			if ((proctab[i].user_process == TRUE) &&
-			    (proctab[i].prprio < UPRIORITY_QUEUES))
+			    (proctab[i].prprio < UPRIORITY_QUEUES) &&
+				(proctab[i].prstate != PR_FREE))
 			{
 				proctab[i].prprio = UPRIORITY_QUEUES;
 				proctab[i].time_allotment = TIME_ALLOTMENT;
@@ -63,7 +64,6 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
     	insert(currpid, readylist, ptold->prprio);
     }
 
-	print_ready_list(readylist);
  	currpid = dequeue(readylist);
 	ptnew = &proctab[currpid];
 	if (currpid != old_pid) ptnew->num_ctxsw++;

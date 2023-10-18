@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 void timed_execution(uint32 runtime){
-	kprintf("In Time Execution\n");
 	while(proctab[currpid].runtime<runtime);
 }
 

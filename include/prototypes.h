@@ -48,7 +48,7 @@ extern	syscall	control(did32, int32, int32, int32);
 extern	pid32	create(void *, uint32, pri16, char *, uint32, ...);
 
 /* in file create.c */
-extern	pid32	create_user_process(void *, uint32, pri16, char *, uint32, ...);
+extern	pid32	create_user_process(void *, uint32, char *, uint32, ...);
 
 /* in file ctxsw.S */
 extern	void	ctxsw(void *, void *);
