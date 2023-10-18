@@ -20,7 +20,7 @@ pid32	create(
 	uint32		savsp, *pushsp;
 	intmask 	mask;    	/* Interrupt mask		*/
 	pid32		pid;		/* Stores new process id	*/
-	struct	procent	*prptr;		/* Pointer to proc. table entry */
+	struct		procent	*prptr;		/* Pointer to proc. table entry */
 	int32		i;
 	uint32		*a;		/* Points to list of args	*/
 	uint32		*saddr;		/* Stack address		*/
@@ -41,6 +41,8 @@ pid32	create(
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
 	prptr->prprio = priority;
+	prptr->time_allotment = 0;
+	prptr->init_time_allotment = 0;
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;
@@ -105,7 +107,6 @@ pid32	create(
 	return pid;
 }
 
-
 /*------------------------------------------------------------------------
  *  create_user_process  -  Create a process from main function
  *------------------------------------------------------------------------
@@ -143,6 +144,9 @@ pid32	create_user_process(
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
 	prptr->prprio = priority;
+	prptr->prprio = UPRIORITY_QUEUES;
+    prptr->time_allotment = TIME_ALLOTMENT;
+	prptr->init_time_allotment = TIME_ALLOTMENT;
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;

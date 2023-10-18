@@ -57,6 +57,10 @@ struct procent {		/* Entry in the process table		*/
 	uint32  runtime;    /* number of milliseconds the process has been running (i.e., in PR_CURR state) */
 	uint32  turnaroundtime; /* turnaround time in milliseconds */
 	uint32  num_ctxsw;   /* number of context switch operations to the process */
+	uint32  time_allotment; /* Time spent at a specific priority level */
+	uint32  init_time_allotment; /* Initial time allotment value */
+	uint32  upgrades; /* Number of priority upgrades for a process */
+    uint32  downgrades; /* Number of priority downgrades for a process */
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/
