@@ -2,6 +2,8 @@
     "files.associations": {
         "xinu.h": "c",
         "resched.h": "c",
-        "prototypes.h": "c"
+        "prototypes.h": "c",
+        "process.h": "c",
+        "queue.h": "c"
     }
 }

@@ -13,6 +13,19 @@ void	clkhandler()
 	/* Increment the time since boot ms counter */
 	ctr1000++;
 
+	if ((proctab[currpid].user_process == TRUE) &&
+		(proctab[currpid].prprio != LOWEST_USER_PRIORITY))
+	{
+		if (proctab[currpid].time_allotment == 0)
+		{
+			proctab[currpid].time_allotment = 0;
+		}
+		else 
+		{
+			proctab[currpid].time_allotment--; 
+		}
+	}
+
 	proctab[currpid].runtime++;
 	
 	/* Decrement the ms counter, and see if a second has passed */

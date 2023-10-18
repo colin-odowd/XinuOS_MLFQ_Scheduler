@@ -3,8 +3,6 @@
 #include <xinu.h>
 
 #define DEBUG_CTXSW 
-#define LOWEST_USER_PRIORITY 1
-#define MINIMUM_SYSTEM_PRIO 20
 
 struct	defer	Defer;
 
@@ -17,8 +15,6 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	struct procent *ptold;	/* Ptr to table entry for old process	*/
 	struct procent *ptnew;	/* Ptr to table entry for new process	*/
 	pid32  old_pid;
-	qid16  curr;
-	pri16  curr_prio = 0;
 	uint32 i;
 
 	/* If rescheduling is deferred, record attempt and return */
@@ -36,11 +32,6 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	if (ptold->prstate == PR_CURR) 
 	{ 
 		ptold->prstate = PR_READY;
-		if ((ptold->user_process == TRUE) &&
-		 	(ptold->prprio != LOWEST_USER_PRIORITY))
-		{
-			proctab[currpid].time_allotment--; 
-		}
 		insert(currpid, readylist, ptold->prprio);
 	}
 
@@ -55,44 +46,24 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 				proctab[i].prprio = UPRIORITY_QUEUES;
 				proctab[i].time_allotment = TIME_ALLOTMENT;
 				proctab[i].upgrades++;
-
-				if (proctab[i].prstate == PR_READY) 
-				{
-					/* Remove from readylist and then reinsert */
-					queuetab[queuetab[i].qprev].qnext = queuetab[i].qnext;
-					queuetab[queuetab[i].qnext].qprev = queuetab[i].qprev;
-					queuetab[i].qnext = EMPTY;
-					queuetab[i].qprev = EMPTY;
-					
-					insert(i, readylist, UPRIORITY_QUEUES);
-				}
 			}
 		}
 	}
 
-	/* Search through readylist and decrement prio if time allotment is zero */
-	curr = firstid(readylist);
-	while (curr != queuetail(readylist)) 
+
+	if ((ptold->prstate==PR_READY) &&
+		(ptold->user_process == TRUE) &&
+		(ptold->time_allotment == 0)  &&
+		(ptold->prprio != LOWEST_USER_PRIORITY))
 	{
-		if ((proctab[curr].user_process == TRUE) &&
-			(proctab[curr].time_allotment == 0)  &&
-			(proctab[curr].prprio != LOWEST_USER_PRIORITY))
-		{
-			/* Remove from readylist and then reinsert */
-			queuetab[queuetab[curr].qprev].qnext = queuetab[curr].qnext;
-			queuetab[queuetab[curr].qnext].qprev = queuetab[curr].qprev;
-			queuetab[curr].qnext = EMPTY;
-			queuetab[curr].qprev = EMPTY;
+		ptold->prprio--;
+		ptold->time_allotment = ptold->init_time_allotment * (1 << (UPRIORITY_QUEUES - ptold->prprio));
+		ptold->downgrades++;
+        getitem(currpid);
+    	insert(currpid, readylist, ptold->prprio);
+    }
 
-			curr_prio = proctab[curr].prprio--;
-			proctab[curr].time_allotment = proctab[curr].init_time_allotment * (1 << (UPRIORITY_QUEUES - curr_prio));
-			proctab[curr].downgrades++;
-
-			insert(curr, readylist, curr_prio);
-		}
-		curr = queuetab[curr].qnext;
-	}
-
+	print_ready_list(readylist);
  	currpid = dequeue(readylist);
 	ptnew = &proctab[currpid];
 	if (currpid != old_pid) ptnew->num_ctxsw++;

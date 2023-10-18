@@ -8,6 +8,8 @@
 #define UPRIORITY_QUEUES 3
 #define TIME_ALLOTMENT 100
 #define PRIORITY_BOOST_PERIOD 10000000
+#define LOWEST_USER_PRIORITY 1
+#define MINIMUM_SYSTEM_PRIO 20
 
 /* Structure that collects items related to deferred rescheduling	*/
 
