@@ -143,8 +143,11 @@ pid32	create_user_process(
 	/* Initialize process table entry for new process */
 	prptr->prstate = PR_SUSP;	/* Initial state is suspended	*/
 	prptr->prprio = UPRIORITY_QUEUES;
-    prptr->time_allotment = TIME_ALLOTMENT;
+    prptr->time_allotment = 0;
+	prptr->create_time = ctr1000;
 	prptr->init_time_allotment = TIME_ALLOTMENT;
+	prptr->upgrades = 0;
+	prptr->downgrades = 0;
 	prptr->prstkbase = (char *)saddr;
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;

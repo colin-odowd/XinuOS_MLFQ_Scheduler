@@ -5,9 +5,9 @@
 #define	DEFER_START	1	/* Start deferred rescehduling		*/
 #define	DEFER_STOP	2	/* Stop  deferred rescehduling		*/
 
-#define UPRIORITY_QUEUES 3
-#define TIME_ALLOTMENT 100
-#define PRIORITY_BOOST_PERIOD 1000
+#define UPRIORITY_QUEUES 5
+#define TIME_ALLOTMENT 10
+#define PRIORITY_BOOST_PERIOD 500
 #define LOWEST_USER_PRIORITY 1
 #define MINIMUM_SYSTEM_PRIO 20
 

@@ -15,7 +15,6 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	struct procent *ptold;	/* Ptr to table entry for old process	*/
 	struct procent *ptnew;	/* Ptr to table entry for new process	*/
 	pid32  old_pid;
-	uint32 i;
 
 	/* If rescheduling is deferred, record attempt and return */
 
@@ -35,25 +34,7 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		insert(currpid, readylist, ptold->prprio);
 	}
 
-	/* Priority boost of all user processes */
-	if (ctr1000 % PRIORITY_BOOST_PERIOD == 0)
-	{
-		for (i = 0; i < NPROC; i++)
-		{
-			if ((proctab[i].user_process == TRUE) &&
-			    (proctab[i].prprio < UPRIORITY_QUEUES) &&
-				(proctab[i].prstate != PR_FREE))
-			{
-				proctab[i].prprio = UPRIORITY_QUEUES;
-				proctab[i].time_allotment = TIME_ALLOTMENT;
-				proctab[i].upgrades++;
-			}
-		}
-	}
-
-
-	if ((ptold->prstate==PR_READY) &&
-		(ptold->user_process == TRUE) &&
+	if ((ptold->user_process == TRUE) &&
 		(ptold->time_allotment == 0)  &&
 		(ptold->prprio != LOWEST_USER_PRIORITY))
 	{
@@ -113,6 +94,6 @@ status	resched_cntl(		/* Assumes interrupts are disabled	*/
 }
 
 void reset_timing(){
- ctr1000 = 0;
+ priority_counter = PRIORITY_BOOST_PERIOD;
  /* reset counter used to trigger priority upgrades */
 }

@@ -9,9 +9,12 @@
 void	clkhandler()
 {
 	static	uint32	count1000 = 1000;	/* Count to 1000 ms	*/
+	pid32 	i;
 
 	/* Increment the time since boot ms counter */
 	ctr1000++;
+	priority_counter--;
+	proctab[currpid].runtime++;
 
 	if ((proctab[currpid].user_process == TRUE) &&
 		(proctab[currpid].prprio != LOWEST_USER_PRIORITY))
@@ -26,7 +29,28 @@ void	clkhandler()
 		}
 	}
 
-	proctab[currpid].runtime++;
+	/* Priority boost of all user processes */
+	if (priority_counter == 0)
+	{
+		for (i = 0; i < NPROC; i++)
+		{
+			if ((proctab[i].user_process == TRUE) &&
+				(proctab[i].prstate != PR_FREE))
+			{
+				proctab[i].prprio = UPRIORITY_QUEUES;
+				proctab[i].time_allotment = TIME_ALLOTMENT;
+				proctab[i].upgrades++;
+    			
+				if (proctab[i].prstate == PR_READY)
+				{
+					getitem(i);
+					insert(i, readylist, proctab[i].prprio);
+				}
+			}
+		}
+		priority_counter = PRIORITY_BOOST_PERIOD;
+		resched();
+	}
 	
 	/* Decrement the ms counter, and see if a second has passed */
 

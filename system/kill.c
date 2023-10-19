@@ -21,8 +21,6 @@ syscall	kill(
 		return SYSERR;
 	}
 
-	proctab[currpid].turnaroundtime = ctr1000 - proctab[currpid].turnaroundtime;
-
 	if (--prcount <= 1) {		/* Last user process completes	*/
 		xdone();
 	}
@@ -33,6 +31,7 @@ syscall	kill(
 	}
 	freestk(prptr->prstkbase, prptr->prstklen);
 
+	proctab[currpid].turnaroundtime = ctr1000 - prptr->create_time;
 	switch (prptr->prstate) {
 	case PR_CURR:
 		prptr->prstate = PR_FREE;	/* Suicide */
